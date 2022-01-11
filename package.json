@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "dotenv": "^11.0.0",
     "eslint": "^8.6.0",
     "eslint-plugin-react": "^7.28.0",
     "express": "^4.17.2",

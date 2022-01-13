@@ -13,6 +13,6 @@ module.exports = {
   },
   plugins: ["react"],
   rules: {
-    semi: false,
+    semi: true,
   },
 };

@@ -1,27 +1,30 @@
 const express = require("express");
 const app = express();
-const port = 5000;
+const port = 8080;
 const mongoose = require("mongoose");
 const { User } = require("./models/User");
 const bodyParser = require("body-parser");
 const config = require("./config/key");
-const { json } = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 //application/x-www-form-lencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 //application/json
 app.use(bodyParser.json());
+app.use(cookieParser);
 
 require("dotenv").config();
 
 mongoose
-  .connect(config.mongoURI, {
+  .connect(
+    config.mongoURI //, {
     //   useNewUrlParser: true,
     //   useUnifiedTopology: true,
     //   useCreateIndex: true,
     //   useFindAndModify: false,
     //mongoose 6.0이상부터 자동으로 위 설정이 반영된다. 따라서 필요없어짐.
-  })
+    // }
+  )
   .then(() => {
     console.log("MongoDB connected...");
   })
@@ -31,6 +34,7 @@ mongoose
 
 app.get("/", (req, res) => {
   res.send("Hello world!");
+  res.end();
 });
 
 app.post("/register", (req, res) => {
@@ -63,9 +67,21 @@ app.post("login", (req, res) => {
       }
     });
 
-    //비밀번호까지 같다면 토큰 생성.
-    user.generateToken((err, user) => {});
+    //비밀번호까지 같다면 토큰 생성. JSON webtoken library를 이용
+    user.generateToken((err, user) => {
+      if (err) return res.status(400).send(err);
+
+      //token을 저장함.어디에? 쿠키, 세션, 로컬스토리지 등등
+      //쿠키에 하기위해서는 쿠키파서 필요.
+      res
+        .cookie("x_auth", user.token)
+        .status(200)
+        .json({ loginSuccess: true, userId: user._id });
+    });
   });
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, "localhost", function (err) {
+  if (err) return console.log(err);
+  console.log("Listening at http://localhost:%s", port);
+});

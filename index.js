@@ -35,10 +35,12 @@ mongoose
 
 app.get("/", (req, res) => {
   res.send("Hello world!");
+  console.log(1);
 });
 
 app.post("/api/users/register", (req, res) => {
   //회원가입 시 필요한 정보를 client로 부터 받아씀.
+
   const user = new User(req.body);
 
   user.save((err, userInfo) => {
@@ -83,14 +85,24 @@ app.post("/api/users/login", (req, res) => {
 
 app.get("/api/users/auth", auth, (req, res) => {
   //여기까지 미들웨어를 통과했다는 뜻은 Authentication이 true라는 말.
-  res.status(200).json({_id:req.user._id,isAdmin:req.user.role===0?false:true,isAuth:true, 
-  email:req.user.email,
-  name:req.user.name,
-  lastname:req.user.lastname,
-  role:req.user.role,
-  image:req.user.image
-  })
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
+  });
+});
 
+app.get("/api/users/logout", auth, (req, res) => {
+  //req.user._id는 auth middleware에서 가져온 거임.
+  User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
+    if (err) return res.json({ success: false, err });
+    return res.status(200).send({ success: true });
+  });
 });
 
 app.listen(port, "localhost", function (err) {

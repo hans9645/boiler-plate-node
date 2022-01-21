@@ -1,4 +1,3 @@
-import { Axios } from "axios";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -29,7 +28,7 @@ function LoginPage(props) {
     dispatch(loginUser(body)).then((response) => {
       if (response.payload.loginSuccess) {
         // props.history.push("/");
-        navigate(-1);
+        navigate("/");
       } else {
         alert(Error);
       }

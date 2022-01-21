@@ -38,6 +38,10 @@ app.get("/", (req, res) => {
   console.log(1);
 });
 
+app.get("/api/hello", (req, res) => {
+  res.send("안녕!");
+});
+
 app.post("/api/users/register", (req, res) => {
   //회원가입 시 필요한 정보를 client로 부터 받아씀.
 

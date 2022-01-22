@@ -30,7 +30,7 @@ function LoginPage(props) {
         // props.history.push("/");
         navigate("/");
       } else {
-        alert(Error);
+        alert(Error, "login error");
       }
     });
   };
